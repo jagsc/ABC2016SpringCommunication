@@ -4,44 +4,44 @@
 
 int main() {
 
-	BthServer bluetoothsrv;
-	int count = 0;
-	int ret = 0;
-	char buf[2024];
-	if (-1 == bluetoothsrv.InitWSAdata()) {
+	bthserver bluetoothsrv;
+	int count_ = 0;
+	int ret_ = 0;
+	char buf_[2024];
+	if (-1 == bluetoothsrv.init_wsadata()) {
 		return -1;
 	}
-	if (-1 == bluetoothsrv.CreateSocket()) {
+	if (-1 == bluetoothsrv.create_socket()) {
 		return -1;
 	}
-	if (-1 == bluetoothsrv.SetBluetoothSock()) {
+	if (-1 == bluetoothsrv.set_bluetooth_sock()) {
 		return -1;
 	}
-	if (-1 == bluetoothsrv.BluetoothGetsockname()) {
+	if (-1 == bluetoothsrv.get_bluetooth_sockname()) {
 		return -1;
 	}
-	if (-1 == bluetoothsrv.WrapWSASetService()) {
+	if (-1 == bluetoothsrv.wrap_wsa_set_service()) {
 		return -1;
 	}
-	if (-1 == bluetoothsrv.ListenAcceptConnect()) {
+	if (-1 == bluetoothsrv.listen_accept_connect()) {
 		return -1;
 	}
 	printf("start\n");
-	while (count == 0) {
-		memset(buf, '\0', sizeof(buf));
-		ret = bluetoothsrv.SockRecv(buf, 0);
-		if (ret > 0)
-			printf("受信メッセージ→%s\n", buf);
-		memset(buf, '\0', sizeof(buf));
-		ret = 0;
-
+	while (count_ == 0) {
+		memset(buf_, '\0', sizeof(buf_));
+		ret_ = bluetoothsrv.recv_data(buf_,sizeof(buf_), 0);
+		if (ret_ > 0) {
+			printf("受信メッセージ→%s\n", buf_);
+		}
+		memset(buf_, '\0', sizeof(buf_));
+		ret_ = 0;
 		//printf("送信メッセージ→");
 		//scanf("%s", buf);
-		bluetoothsrv.SockSend(buf, 0);
+		bluetoothsrv.send_data(buf_,sizeof(buf_), 0);
 	}
 
 
-	bluetoothsrv.DestroySock();
+	bluetoothsrv.destroy_sock();
 
 	return 0;
 }

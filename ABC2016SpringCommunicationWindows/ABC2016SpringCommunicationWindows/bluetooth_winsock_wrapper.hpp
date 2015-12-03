@@ -8,34 +8,34 @@
 
 #pragma comment(lib, "Ws2_32")
 
-class BthServer {
+class bthserver {
 private:
-	WSADATA mWsaData;
-	SOCKADDR_BTH mSa;
-	SOCKET mListen_sock;
-	CSADDR_INFO mInfo;
-	WSAQUERYSET mQuset;
-	SOCKET mSock;
-	GUID mBluetoothspp_uuid;
+	WSADATA bts_wsadata_;
+	SOCKADDR_BTH bts_sa_;
+	SOCKET bts_listen_sock_;
+	CSADDR_INFO bts_info_;
+	WSAQUERYSET bts_quset_;
+	SOCKET bts_sock_;
+	GUID bts_spp_uuid_;
 public:
 
-	int InitWSAdata();
+	int init_wsadata();
 
-	int CreateSocket();
+	int create_socket();
 
-	int SetBluetoothSock();
+	int set_bluetooth_sock();
 
-	int BluetoothGetsockname();
+	int get_bluetooth_sockname();
 
-	int WrapWSASetService();
+	int wrap_wsa_set_service();
 
-	int ListenAcceptConnect();
+	int listen_accept_connect();
 
-	int SockRecv(char*, int);
+	int recv_data(char*, int , int);
 
-	int SockSend(char*, int);
+	int send_data(char*,int, int);
 
-	void DestroySock();
+	void destroy_sock();
 
 };
 

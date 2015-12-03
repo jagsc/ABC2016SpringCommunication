@@ -2,96 +2,96 @@
 #include"bluetooth_winsock_wrapper.hpp"
 
 
-	int BthServer::InitWSAdata() {
-		mWsaData = { 0 };
-		mInfo = { 0 };
-		mSa = { 0 };
-		mBluetoothspp_uuid = { 0x11111111, 0x1111, 0x1111, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x23 };
-		if (WSAStartup(MAKEWORD(2, 2), &mWsaData) !=0) {
-			return -1;
-		}
-		return 0;
+int bthserver::init_wsadata() {
+	bts_wsadata_ = { 0 };
+	bts_info_ = { 0 };
+	bts_sa_ = { 0 };
+	bts_spp_uuid_ = { 0x11111111, 0x1111, 0x1111, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x23 };
+	if (WSAStartup(MAKEWORD(2, 2), &bts_wsadata_) != 0) {
+		return -1;
 	}
+	return 0;
+}
 
-	int BthServer::CreateSocket() {
-		if (INVALID_SOCKET==(mListen_sock = socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM))) {
-			return -1;
-		}
-		return 0;
+int bthserver::create_socket() {
+	if (INVALID_SOCKET == (bts_listen_sock_ = socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM))) {
+		return -1;
 	}
+	return 0;
+}
 
-	int BthServer::SetBluetoothSock() {
-		mSa.addressFamily = AF_BTH;
-		mSa.port = BT_PORT_ANY;
-		if (SOCKET_ERROR==bind(mListen_sock, (SOCKADDR*)&mSa, sizeof(mSa))) {
-			return -1;
-		}
-		return 0;
+int bthserver::set_bluetooth_sock() {
+	bts_sa_.addressFamily = AF_BTH;
+	bts_sa_.port = BT_PORT_ANY;
+	if (SOCKET_ERROR == bind(bts_listen_sock_, reinterpret_cast<SOCKADDR*>(&bts_sa_), sizeof(bts_sa_))) {
+		return -1;
 	}
+	return 0;
+}
 
-	int BthServer::BluetoothGetsockname() {
-		int socksize = sizeof(mSa);
-		if (-1 == getsockname(mListen_sock, (SOCKADDR*)&mSa, &socksize)) {
-			return -1;
-		}
-		return 0;
+int bthserver::get_bluetooth_sockname() {
+	int socksize = sizeof(bts_sa_);
+	if (-1 == getsockname(bts_listen_sock_, reinterpret_cast<SOCKADDR*>(&bts_sa_), &socksize)) {
+		return -1;
 	}
+	return 0;
+}
 
 
 
-	int BthServer::WrapWSASetService() {
-		mInfo.LocalAddr.lpSockaddr = (LPSOCKADDR)&mSa;
-		mInfo.LocalAddr.iSockaddrLength = sizeof(mSa);
-		mInfo.iSocketType = SOCK_STREAM;
-		mInfo.iProtocol = BTHPROTO_RFCOMM;
+int bthserver::wrap_wsa_set_service() {
+	bts_info_.LocalAddr.lpSockaddr = reinterpret_cast<LPSOCKADDR>(&bts_sa_);
+	bts_info_.LocalAddr.iSockaddrLength = sizeof(bts_sa_);
+	bts_info_.iSocketType = SOCK_STREAM;
+	bts_info_.iProtocol = BTHPROTO_RFCOMM;
 
-		mQuset.dwSize = sizeof(WSAQUERYSET);
-		mQuset.dwOutputFlags = 0;
-		mQuset.lpszServiceInstanceName = (LPWSTR)"Server";
-		mQuset.lpServiceClassId = (LPGUID)&mBluetoothspp_uuid;
-		mQuset.lpVersion = NULL;
-		mQuset.lpszComment = NULL;
-		mQuset.dwNameSpace = NS_BTH;
-		mQuset.lpNSProviderId = NULL;
-		mQuset.lpszContext = NULL;
-		mQuset.dwNumberOfProtocols = 0;
-		mQuset.lpafpProtocols = NULL;
-		mQuset.lpszQueryString = NULL;
-		mQuset.dwNumberOfCsAddrs = 1;
-		mQuset.lpcsaBuffer = &mInfo;
-		mQuset.lpBlob = NULL;
-		if (0 != WSASetService(&mQuset, RNRSERVICE_REGISTER, 0)) {
-			return -1;
-		}
-		return 0;
+	bts_quset_.dwSize = sizeof(WSAQUERYSET);
+	bts_quset_.dwOutputFlags = 0;
+	bts_quset_.lpszServiceInstanceName = reinterpret_cast<LPWSTR>("Server");
+	bts_quset_.lpServiceClassId = static_cast<LPGUID>(&bts_spp_uuid_);
+	bts_quset_.lpVersion = 0;
+	bts_quset_.lpszComment = 0;
+	bts_quset_.dwNameSpace = NS_BTH;
+	bts_quset_.lpNSProviderId = 0;
+	bts_quset_.lpszContext = 0;
+	bts_quset_.dwNumberOfProtocols = 0;
+	bts_quset_.lpafpProtocols = 0;
+	bts_quset_.lpszQueryString = 0;
+	bts_quset_.dwNumberOfCsAddrs = 1;
+	bts_quset_.lpcsaBuffer = &bts_info_;
+	bts_quset_.lpBlob = 0;
+	if (0 != WSASetService(&bts_quset_, RNRSERVICE_REGISTER, 0)) {
+		return -1;
 	}
+	return 0;
+}
 
-	int BthServer::ListenAcceptConnect() {
-		listen(mListen_sock, 1);
-		SOCKADDR_BTH sa2;
-		int ilen = sizeof(sa2);
-		if (INVALID_SOCKET==(mSock = accept(mListen_sock, (SOCKADDR*)&sa2, &ilen))) {
-			return -1;
-		}
-		return 0;
+int bthserver::listen_accept_connect() {
+	listen(bts_listen_sock_, 1);
+	SOCKADDR_BTH bts_sa2;
+	int bts_ilen = sizeof(bts_sa2);
+	if (INVALID_SOCKET == (bts_sock_ = accept(bts_listen_sock_, reinterpret_cast<SOCKADDR*>(&bts_sa2), &bts_ilen))) {
+		return -1;
 	}
+	return 0;
+}
 
-	int BthServer::SockRecv(char *buf, int Flag) {
-		int ret;
-		ret = recv(mSock, buf, sizeof(buf), Flag);
-		return ret;
-	}
+int bthserver::recv_data(char *buf, int bufsize, int Flag) {
+	int bts_ret;
+	bts_ret = recv(bts_sock_, buf, bufsize, Flag);
+	return bts_ret;
+}
 
-	int BthServer::SockSend(char *buf,int Flag){
-		int ret;
-		ret = send(mSock, buf, sizeof(buf), Flag);
-		return ret;
-	}
+int bthserver::send_data(char *buf, int bufsize, int Flag) {
+	int bts_ret;
+	bts_ret = send(bts_sock_, buf, bufsize, Flag);
+	return bts_ret;
+}
 
-	void BthServer::DestroySock() {
-		closesocket(mListen_sock);
-		closesocket(mSock);
-		WSACleanup();
-	}
-	
+void bthserver::destroy_sock() {
+	closesocket(bts_listen_sock_);
+	closesocket(bts_sock_);
+	WSACleanup();
+}
+
 
