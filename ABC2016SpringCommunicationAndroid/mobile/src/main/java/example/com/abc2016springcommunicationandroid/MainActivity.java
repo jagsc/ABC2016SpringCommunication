@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private TextView resultview;
     private String resultstr;
 
-    // private Handler _handler;
+    private Handler _handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,25 +55,49 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         resultview = (TextView) findViewById(R.id.resulttxtview);
         mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addApi(Wearable.API).build();
         resultstr="";
+/*
+      _handler.postDelayed(new Runnable() {//Timer的な
+          @Override
+          public void run() {
 
-/*          //なぜか、自動同期でよく失敗するので一旦ボタンで対処
-        _handler.postDelayed(new Runnable() {//Timer的な
-            @Override
-            public void run() {
+              SendSensorNum("");
 
-                bluetoothTask.doSend(resultstr);
-
-                _handler.postDelayed(this, 250);
-            }
-        }, 250);*/
+              _handler.postDelayed(this, 250);
+          }
+      }, 250);*/
+        /*editText1 = (EditText) findViewById(R.id.editText1);
+        editText2 = (EditText) findViewById(R.id.editText2);*/
 
         Button sendBtn = (Button) findViewById(R.id.sendBtn);
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //String msg = editText1.getText().toString();
                 bluetoothTask.doSend(resultstr);
             }
         });
+        /*
+        Button resetBtn = (Button) findViewById(R.id.resetBtn);
+        resetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                restart();
+            }
+        });*/
+        //bluetoothTask.doSend(resultstr);
+    }
+
+    public void SendSensorNum(String sendstr){
+        bluetoothTask.doSend(sendstr);
+
+    }
+
+    @Override
+    protected void onStop() {
+        // TODO Auto-generated method stub
+        super.onStop();
+        _handler.removeCallbacksAndMessages(null);
+
     }
 
     @SuppressWarnings("deprecation")
@@ -86,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         bluetoothTask.init();
         // ペアリング済みデバイスの一覧を表示してユーザに選ばせる。
         showDialog(DEVICES_DIALOG);
+
     }
 
     @Override
@@ -175,6 +200,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
     public void hideWaitDialog() {
         waitDialog.dismiss();
+        _handler.postDelayed(new Runnable() {//Timer的な
+            @Override
+            public void run() {
+
+                SendSensorNum(resultstr);
+
+                _handler.postDelayed(this, 50);
+            }
+        }, 50);
     }
 
     @Override
@@ -202,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onPause(){
         super.onPause();
-        if(mGoogleApiClient != null && mGoogleApiClient.isConnected()){
+        if(mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
     }
@@ -229,14 +263,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 Log.d("TAG", "DataItem changed: " + event.getDataItem().getUri());
                 DataMap dataMap = DataMap.fromByteArray(event.getDataItem().getData());
                 float sensordataArray[] = dataMap.getFloatArray("sensordata");
-                resultstr = "AccSensorNum:"
-                        + "\nX:" + sensordataArray[0]
-                        + "\nY:" + sensordataArray[1]
-                        + "\nZ:" + sensordataArray[2]
-                        + "\n\n" + "GyroSensorNum:"
-                        + "\nX:" + sensordataArray[3]
-                        + "\nY:" + sensordataArray[4]
-                        + "\nZ:" + sensordataArray[5];
+                resultstr = "{\n"
+                        +" \"Acc\": {\n"
+                        + "  \"x\": " + sensordataArray[0]+"\n"
+                        + "  \"y\": " + sensordataArray[1]+"\n"
+                        + "  \"z\": " + sensordataArray[2]+"\n"
+                        +"  }\n"
+                        +" \"Gyro\": {\n"
+                        + "  \"x\": " + sensordataArray[3]+"\n"
+                        + "  \"y\": " + sensordataArray[4]+"\n"
+                        + "  \"z\": " + sensordataArray[5]+"\n"
+                        +" }\n"
+                        +"}";
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
