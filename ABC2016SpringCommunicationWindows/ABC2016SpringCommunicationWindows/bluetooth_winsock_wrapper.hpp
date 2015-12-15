@@ -2,6 +2,7 @@
 #ifndef __BLUETOOTHWINSOCKWRAPPER_H_INCLUEDED__
 #define __BLUETOOTHWINSOCKWRAPPER_H_INCLUEDED__
 
+#include <iostream>
 #include <WinSock2.h>
 #include <ws2bth.h>
 
