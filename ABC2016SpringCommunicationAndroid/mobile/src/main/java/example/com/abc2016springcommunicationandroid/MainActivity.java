@@ -263,18 +263,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 Log.d("TAG", "DataItem changed: " + event.getDataItem().getUri());
                 DataMap dataMap = DataMap.fromByteArray(event.getDataItem().getData());
                 float sensordataArray[] = dataMap.getFloatArray("sensordata");
-                resultstr = "{\n"
-                        +" \"Acc\": {\n"
-                        + "  \"x\": " + sensordataArray[0]+"\n"
-                        + "  \"y\": " + sensordataArray[1]+"\n"
-                        + "  \"z\": " + sensordataArray[2]+"\n"
-                        +"  }\n"
-                        +" \"Gyro\": {\n"
-                        + "  \"x\": " + sensordataArray[3]+"\n"
-                        + "  \"y\": " + sensordataArray[4]+"\n"
-                        + "  \"z\": " + sensordataArray[5]+"\n"
-                        +" }\n"
-                        +"}";
+                /*resultstr = "{\n"
+                                +" \"Acc\": {\n"
+                                    + "  \"x\": " + sensordataArray[0]+"\n"
+                                    + "  \"y\": " + sensordataArray[1]+"\n"
+                                    + "  \"z\": " + sensordataArray[2]+"\n"
+                                +"  }\n"
+                                +" \"Gyro\": {\n"
+                                    + "  \"x\": " + sensordataArray[3]+"\n"
+                                    + "  \"y\": " + sensordataArray[4]+"\n"
+                                    + "  \"z\": " + sensordataArray[5]+"\n"
+                                +" }\n"
+                            +"}";*/
+                resultstr = sensordataArray[0]+","+sensordataArray[1]+","+sensordataArray[2]+","+sensordataArray[3]+","+sensordataArray[4]+","+sensordataArray[5];
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
