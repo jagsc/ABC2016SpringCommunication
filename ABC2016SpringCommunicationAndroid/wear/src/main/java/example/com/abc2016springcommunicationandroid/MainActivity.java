@@ -64,9 +64,9 @@ public class MainActivity extends WearableActivity  implements SensorEventListen
 
                 RefreshSensorNum();
 
-                _handler.postDelayed(this, 250);
+                _handler.postDelayed(this, 50);
             }
-        }, 250);
+        }, 50);
     }
 
     @Override
