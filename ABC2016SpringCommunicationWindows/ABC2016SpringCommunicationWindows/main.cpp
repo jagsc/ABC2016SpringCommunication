@@ -1,6 +1,6 @@
 
 #include"bluetooth_winsock_wrapper.hpp"
-#include<stdio.h>
+#include<cstdio>
 
 int main() {
 
