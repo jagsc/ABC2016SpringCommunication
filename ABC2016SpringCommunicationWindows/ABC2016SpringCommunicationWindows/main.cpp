@@ -1,6 +1,7 @@
 
-#include"bluetooth_winsock_wrapper.hpp"
+#include"communication/bluetooth_winsock_wrapper.hpp"
 #include<cstdio>
+#include<cstring>
 
 int main() {
 
@@ -26,13 +27,13 @@ int main() {
     if (-1 == bluetooth_server_.listen_accept_connect()) {
         return -1;
     }
-    printf("start\n");
+    std::printf("start\n");
 
     while (count_ == 0) {
-        memset(buf_, '\0', sizeof(buf_));
+        std::memset(buf_, '\0', sizeof(buf_));
         ret_ = bluetooth_server_.recv_data(buf_,sizeof(buf_), 0);
         if (ret_ > 0) {
-            printf("受信メッセージ→%s\n", buf_);
+            std::printf("受信メッセージ→%s\n", buf_);
         }
         //memset(buf_, '\0', sizeof(buf_));
         ret_ = 0;

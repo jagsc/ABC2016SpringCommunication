@@ -142,11 +142,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="bluetooth_winsock_wrapper.cpp" />
+    <ClCompile Include="communication\bluetooth_winsock_wrapper.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bluetooth_winsock_wrapper.hpp" />
+    <ClInclude Include="communication\bluetooth_winsock_wrapper.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
