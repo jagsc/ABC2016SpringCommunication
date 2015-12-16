@@ -148,6 +148,9 @@
   <ItemGroup>
     <ClInclude Include="communication\bluetooth_winsock_wrapper.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.gitignore" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
