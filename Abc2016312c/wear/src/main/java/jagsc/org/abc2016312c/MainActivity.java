@@ -162,7 +162,7 @@ public class MainActivity extends WearableActivity  implements SensorEventListen
     }
 
     public void RefreshSensorNum(){
-        long timestamp = System.currentTimeMillis();
+        long timestamp = System.nanoTime();
         StringBuilder str_builder = new StringBuilder();
         str_builder.append(Long.toString(timestamp));
         for(int element_num=0;element_num < sensordata.length;++element_num){
