@@ -156,14 +156,38 @@ public class BluetoothTask {
 
     /**
      * サーバとメッセージの送受信を行う非同期タスク。
-     * - 英小文字の文字列を送ると英大文字で戻ってくる。
-     * - 戻ってきた文字列を下段のTextViewに反映する。
      */
     private class SendTask extends AsyncTask<String, Void, Object> {
         @Override
         protected Object doInBackground(String... params) {
             try {
-                btOut.write(params[0].getBytes());
+                byte[] buffer_ = new byte[params[0].length()/2+1];
+                for( int i = 0; i < params[0].length(); ++i ){
+                    int tmp;
+                    switch( params[0].charAt(i) ){
+                        case '0': tmp = 0x01; break;
+                        case '1': tmp = 0x02; break;
+                        case '2': tmp = 0x03; break;
+                        case '3': tmp = 0x04; break;
+                        case '4': tmp = 0x05; break;
+                        case '5': tmp = 0x06; break;
+                        case '6': tmp = 0x07; break;
+                        case '7': tmp = 0x08; break;
+                        case '8': tmp = 0x09; break;
+                        case '9': tmp = 0x0a; break;
+                        case '-': tmp = 0x0b; break;
+                        case '.': tmp = 0x0c; break;
+                        case ',': tmp = 0x0d; break;
+                        default: tmp = 0x00; break;
+                    }
+                    if( i % 2 == 0 ){
+                        buffer_[i/2] = (byte)( tmp << 4 );
+                    }
+                    else{
+                        buffer_[i/2] += (byte)tmp;
+                    }
+                }
+                btOut.write(buffer_);
                 btOut.flush();
 
                 byte[] buff = new byte[512];

@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private TextView resultview;
     private String resultstr;
 
-    private Handler _handler = new Handler();
+    private boolean connected_;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
-        _handler.removeCallbacksAndMessages(null);
+        connected_ = false;
 
     }
 
@@ -188,15 +188,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
     public void hideWaitDialog() {
         waitDialog.dismiss();
-        _handler.postDelayed(new Runnable() {//Timer的な
-            @Override
-            public void run() {
-
-                SendSensorNum(resultstr);
-
-                _handler.postDelayed(this, 50);
-            }
-        }, 50);
+        connected_ = true;
+        resultview.setText("connected");
     }
 
     @Override
@@ -251,13 +244,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onMessageReceived(MessageEvent messageEvent) {
         if (messageEvent.getPath().equals("/sensordata")) {
             resultstr = new String(messageEvent.getData());
-            Log.d("TAG", resultstr);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    resultview.setText(resultstr);
-                }
-            });
+            if(connected_){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        resultview.setText(resultstr);
+                        SendSensorNum(resultstr);
+                    }
+                });
+            }
         }
     }
 }

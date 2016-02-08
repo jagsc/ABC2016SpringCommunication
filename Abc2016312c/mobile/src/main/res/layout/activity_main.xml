@@ -14,15 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/resulttxtview"
-        android:text="Hello World!" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/sendBtn"
-        android:layout_below="@+id/resulttxtview"
-        android:layout_toEndOf="@+id/resulttxtview"
-        android:layout_marginTop="202dp" />
+        android:text="" />
 
 </RelativeLayout>
