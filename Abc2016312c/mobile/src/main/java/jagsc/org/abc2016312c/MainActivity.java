@@ -60,14 +60,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         /*editText1 = (EditText) findViewById(R.id.editText1);
         editText2 = (EditText) findViewById(R.id.editText2);*/
 
-        Button sendBtn = (Button) findViewById(R.id.sendBtn);
-        sendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //String msg = editText1.getText().toString();
-                bluetoothTask.doSend(resultstr);
-            }
-        });
         /*
         Button resetBtn = (Button) findViewById(R.id.resetBtn);
         resetBtn.setOnClickListener(new View.OnClickListener() {
