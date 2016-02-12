@@ -31,6 +31,9 @@ public class BluetoothTask {
     private InputStream btIn;
     private OutputStream btOut;
 
+    private boolean is_inited=false;
+    private boolean is_connected=false;
+
     public BluetoothTask(MainActivity activity) {
         this.activity = activity;
     }
@@ -51,7 +54,17 @@ public class BluetoothTask {
             activity.errorDialog("This device is disabled Bluetooth.");
             return;
         }
+        is_inited=true;
     }
+
+    public boolean is_inited(){
+        return is_inited;
+    }
+
+    public boolean is_connected(){
+        return is_connected;
+    }
+
     /**
      * @return ペアリング済みのデバイス一覧を返す。デバイス選択ダイアログ用。
      */
@@ -63,9 +76,12 @@ public class BluetoothTask {
      * 非同期で指定されたデバイスの接続を開始する。
      * - 選択ダイアログから選択されたデバイスを設定される。
      * @param device 選択デバイス
+     *               nullがきたら再接続なのでbluetoothDeviceの値は更新しない
      */
     public void doConnect(BluetoothDevice device) {
-        bluetoothDevice = device;
+        if(device!=null){
+            bluetoothDevice = device;
+        }
         try {
             bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(APP_UUID);
             //Method m = bluetoothDevice.getClass().getMethod("createInsecureRfcommSocket", new Class[] {int.class});
@@ -76,6 +92,7 @@ public class BluetoothTask {
             Log.e(TAG,e.toString(),e);
             activity.errorDialog(e.toString());
         }
+        is_connected=true;
     }
 
     /**
@@ -83,6 +100,7 @@ public class BluetoothTask {
      */
     public void doClose() {
         new CloseTask().execute();
+        is_connected=false;
     }
 
     /**

@@ -60,14 +60,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         /*editText1 = (EditText) findViewById(R.id.editText1);
         editText2 = (EditText) findViewById(R.id.editText2);*/
 
-        Button sendBtn = (Button) findViewById(R.id.sendBtn);
+        /*Button sendBtn = (Button) findViewById(R.id.sendBtn);
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //String msg = editText1.getText().toString();
                 bluetoothTask.doSend(resultstr);
             }
-        });
+        });*/
         /*
         Button resetBtn = (Button) findViewById(R.id.resetBtn);
         resetBtn.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
+        if(bluetoothTask != null && bluetoothTask.is_connected()){
+            bluetoothTask.doClose();
+        }
         connected_ = false;
 
     }
@@ -98,23 +101,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onResume();
 
         mGoogleApiClient.connect();
-        // Bluetooth初期化
-        bluetoothTask.init();
-        // ペアリング済みデバイスの一覧を表示してユーザに選ばせる。
-        showDialog(DEVICES_DIALOG);
+        if(bluetoothTask.is_inited()){
+            bluetoothTask.doConnect(null);
+        }else{
+            // Bluetooth初期化
+            bluetoothTask.init();
+            // ペアリング済みデバイスの一覧を表示してユーザに選ばせる。
+            showDialog(DEVICES_DIALOG);
+        }
 
     }
 
     @Override
     protected void onDestroy() {
-        bluetoothTask.doClose();
         super.onDestroy();
-    }
-
-    protected void restart() {
-        Intent intent = this.getIntent();
-        this.finish();
-        this.startActivity(intent);
+        if(bluetoothTask != null && bluetoothTask.is_connected()){
+            bluetoothTask.doClose();
+        }
     }
 
     //----------------------------------------------------------------
@@ -221,6 +224,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             //mGoogleApiClient.disconnect();
             Wearable.MessageApi.removeListener(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
+        }
+        if(bluetoothTask != null && bluetoothTask.is_connected()){
+            bluetoothTask.doClose();
+            connected_=false;
         }
     }
 
