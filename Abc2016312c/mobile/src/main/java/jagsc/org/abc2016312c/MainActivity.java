@@ -88,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
+        if(bluetoothTask != null && bluetoothTask.is_connected()){
+            bluetoothTask.doClose();
+        }
         connected_ = false;
 
     }
@@ -98,17 +101,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onResume();
 
         mGoogleApiClient.connect();
-        // Bluetooth初期化
-        bluetoothTask.init();
-        // ペアリング済みデバイスの一覧を表示してユーザに選ばせる。
-        showDialog(DEVICES_DIALOG);
+        if(bluetoothTask.is_inited()){
+            bluetoothTask.doConnect(null);
+        }else{
+            // Bluetooth初期化
+            bluetoothTask.init();
+            // ペアリング済みデバイスの一覧を表示してユーザに選ばせる。
+            showDialog(DEVICES_DIALOG);
+        }
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        bluetoothTask.doClose();
+        if(bluetoothTask != null && bluetoothTask.is_connected()){
+            bluetoothTask.doClose();
+        }
     }
 
     //----------------------------------------------------------------
@@ -215,6 +224,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             //mGoogleApiClient.disconnect();
             Wearable.MessageApi.removeListener(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
+        }
+        if(bluetoothTask != null && bluetoothTask.is_connected()){
+            bluetoothTask.doClose();
+            connected_=false;
         }
     }
 
