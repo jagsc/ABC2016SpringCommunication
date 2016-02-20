@@ -248,7 +248,7 @@ public class BluetoothTask {
                 btOut.flush();
 
                 byte[] buff = new byte[512];
-                int len = btIn.read(buff); // TODO:ループして読み込み
+                int len = 0; //btIn.read(buff); // TODO:ループして読み込み
 
                 return new String(buff, 0, len);
             } catch (Throwable t) {
@@ -291,9 +291,11 @@ public class BluetoothTask {
             } else {
                 // 結果を画面に反映。
                 //activity.doSetResultText(result.toString());
-
-                // TODO:Wearに転送する処理
-                Toast.makeText(activity,result.toString(),Toast.LENGTH_SHORT).show();//とりあえずトーストで表示
+                String r_ = result.toString();
+                if( !r_.isEmpty() ){
+                    // TODO:Wearに転送する処理
+                    Toast.makeText(activity,result.toString(),Toast.LENGTH_SHORT).show();//とりあえずトーストで表示
+                }
             }
         }
     }
