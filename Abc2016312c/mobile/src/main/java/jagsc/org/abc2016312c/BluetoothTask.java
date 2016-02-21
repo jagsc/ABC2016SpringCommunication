@@ -13,6 +13,8 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class BluetoothTask {
@@ -248,7 +250,7 @@ public class BluetoothTask {
                 btOut.flush();
 
                 byte[] buff = new byte[512];
-                int len = 0; //btIn.read(buff); // TODO:ループして読み込み
+                int len = btIn.read(buff);
 
                 return new String(buff, 0, len);
             } catch (Throwable t) {
@@ -263,8 +265,18 @@ public class BluetoothTask {
                     Log.e(TAG, result.toString(), (Throwable) result);
                     activity.errorDialog(result.toString());
                 } else {
-                    // 結果を画面に反映。
-                    //activity.doSetResultText(result.toString());
+                    String r_ = result.toString();
+                    if( r_.equals("\0") ){
+                        //Log.i("test","empty message");
+                    } else {
+                        // TODO:Wearに転送する処理
+                        Pattern p = Pattern.compile("scene:([^\n\0\r]*)");
+                        Matcher m = p.matcher(r_);
+                        if( m.find() ){
+                            String scene_name_ = m.group(1);
+                            Toast.makeText(activity,"scene is changed"+scene_name_,Toast.LENGTH_SHORT).show();//とりあえずトーストで表示
+                        }
+                    }
                 }
             }
         }
@@ -273,10 +285,7 @@ public class BluetoothTask {
         @Override
         protected Object doInBackground(String... params) {
             try {
-                byte[] buff = new byte[512];
-                int len = btIn.read(buff);
-
-                return new String(buff, 0, len);
+                return null;
             } catch (Throwable t) {
                 doClose();
                 return t;
@@ -289,14 +298,7 @@ public class BluetoothTask {
                 Log.e(TAG, result.toString(), (Throwable) result);
                 activity.errorDialog(result.toString());
             } else {
-                // 結果を画面に反映。
-                //activity.doSetResultText(result.toString());
-                String r_ = result.toString();
-                if( !r_.isEmpty() ){
-                    // TODO:Wearに転送する処理
-                    Toast.makeText(activity,result.toString(),Toast.LENGTH_SHORT).show();//とりあえずトーストで表示
-                }
             }
         }
     }
-    }
+}

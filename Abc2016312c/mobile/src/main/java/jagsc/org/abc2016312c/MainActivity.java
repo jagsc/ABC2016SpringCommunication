@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     public void SendSensorNum(String sendstr){
         bluetoothTask.doSend(sendstr);
-        bluetoothTask.doReceive();
 
     }
 
